@@ -39,31 +39,6 @@ make LDFLAGS="-luv -lpthread" && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
 ```
 
-#### 🎩 RHEL / AlmaLinux / Rocky Linux 9
-
-```bash
-# 1. Enable EPEL & CRB repositories
-sudo dnf install -y epel-release
-sudo crb enable
-
-# 2. Install runtime dependencies & build tools
-sudo dnf install -y p7zip p7zip-plugins unar unzip cpio gcc-c++ make git libuv-devel lz4-devel zlib-devel libdeflate-devel
-
-# 3. Extract chdman standalone binary
-cd /tmp
-wget -O mame-tools.rpm https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm
-rpm2cpio mame-tools.rpm | cpio -idmv ./usr/bin/chdman
-sudo mv usr/bin/chdman /usr/local/bin/
-rm -f /tmp/mame-tools.rpm
-
-# 4. Build and install maxcso
-cd /tmp
-git clone https://github.com/unknownbrackets/maxcso.git
-cd maxcso
-make && sudo make install
-cd /tmp && rm -rf /tmp/maxcso
-```
-
 ### 🏠 2. Install RomConvert (Local Setup)
 
 Clone the repository and create a symbolic link to your local user's binary directory:
