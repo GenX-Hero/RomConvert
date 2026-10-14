@@ -135,10 +135,11 @@ Source archive filenames **must include disc tag indicators** such as `(Disc 1)`
 
 ### 📁 `.multidisc` Directory Logic
 When a multi-disc set is processed:
-1. A hidden directory named `.multidisc/<Game Name>` is created inside the target PS1 folder.
+1. A hidden directory named `.multidisc/<Game Name>` is created inside the target folder.
 2. Individual `.chd` files for each disc are placed inside `.multidisc/<Game Name>/`.
 3. A single `.m3u` playlist referencing all discs is generated in the root PS1 directory, ensuring frontends like ES-DE show a clean, single game entry instead of multiple disc entries.
 
+According to my setup, i place the "hidden" .multidisc folder in the ES-DE system (psx) ROMs folder, at the same level with its m3u and other single disk games' chd then i keep hidden folder visibility flagged oof in ES-DE settings.
 ---
 
 ## 💻 Usage
