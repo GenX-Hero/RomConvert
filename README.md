@@ -114,7 +114,7 @@ CUE_DIR="/mnt/d/RomConvert/CUE_Library/PSX"
 
 > ⚠️ **Note**: As distributed, these variables reflect the author's specific ES-DE installation paths. Modify them at your own risk to match your local storage structure or mount points.
 
-### 📑 CUE File Library (`CUE_LIB_DIR`)
+### 📑 CUE File Library (`CUE_DIR`)
 For PS1 conversion, if an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, `RomConvert` checks `CUE_DIR` for standard Redump `.cue` files to automatically recover and rebuild the disc structure before converting to `.chd`.
 
 ---
@@ -139,7 +139,8 @@ When a multi-disc set is processed:
 2. Individual `.chd` files for each disc are placed inside `.multidisc/<Game Name>/`.
 3. A single `.m3u` playlist referencing all discs is generated in the root PS1 directory, ensuring frontends like ES-DE show a clean, single game entry instead of multiple disc entries.
 
-According to my setup, i place the "hidden" .multidisc folder in the ES-DE system (psx) ROMs folder, at the same level with its m3u and other single disc games' chd then i keep hidden folder visibility flagged off in ES-DE settings.
+💡 Tip: In ES-DE, place the .multidisc folder inside the psx ROMs directory at the same level as the .m3u playlist and single-disc .chd files. Ensure "Show Hidden Files/Folders" is toggled OFF in ES-DE settings for a clean game list.
+
 ---
 
 ## 💻 Usage
@@ -170,7 +171,7 @@ romconvert ps2 "Metal Gear Solid 2*.zip"
 # Convert a PSP game
 romconvert psp "Wild Arms XF*.7z"
 
-# Convert a batch of single disk games (keep this within the same system)
+# Convert a batch of single disc games (keep this within the same system)
 # Assuming you have in the folder: both "God of Wars (NTSC).7z" and "God of Wars II (PAL).zip"
 romconvert ps2 "God of Wars*"
 
