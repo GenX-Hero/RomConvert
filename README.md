@@ -34,16 +34,21 @@ chmod +x maxcso
 sudo mv maxcso /usr/local/bin/
 ```
 
-### Fedora / RHEL / Rocky Linux / AlmaLinux
 
-> **Note for RHEL / Rocky / Alma:** Enable the EPEL repository first to access packages like `unar` and `maxcso`.
+#### Fedora / RHEL / Rocky Linux / AlmaLinux
+
+> **Note for RHEL / AlmaLinux / Rocky Linux 9:** Enable EPEL, CRB, and RPM Fusion repositories first.
 
 ```bash
-# Enable EPEL (RHEL / Rocky / Alma only)
+# Enable EPEL & CRB (RHEL / Alma / Rocky 9)
 sudo dnf install -y epel-release
+sudo crb enable
+
+# Enable RPM Fusion (required for mame-tools on EL9)
+sudo dnf install -y [https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm](https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm) [https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm](https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm)
 
 # Install dependencies
-sudo dnf install -y mame-tools maxcso p7zip p7zip-plugins unar unzip
+sudo dnf install -y mame-tools p7zip p7zip-plugins unar unzip
 ```
 
 ---
