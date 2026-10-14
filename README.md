@@ -29,7 +29,7 @@ sudo apt update && sudo apt install -y mame-tools p7zip-full p7zip-rar unzip una
 2. Install `maxcso` (download binary directly if not available in your distribution's APT repositories, e.g., Ubuntu 24.04+):
 
 ```bash
-wget [https://github.com/UnknownBrackets/maxcso/releases/download/v1.13.0/maxcso](https://github.com/UnknownBrackets/maxcso/releases/download/v1.13.0/maxcso)
+wget https://github.com/UnknownBrackets/maxcso/releases/download/v1.13.0/maxcso
 chmod +x maxcso
 sudo mv maxcso /usr/local/bin/
 ```
