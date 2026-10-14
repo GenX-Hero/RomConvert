@@ -45,7 +45,7 @@ sudo dnf install -y epel-release
 sudo crb enable
 
 # Enable RPM Fusion (required for mame-tools on EL9)
-sudo dnf install -y [https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm](https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm) [https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm](https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm)
+sudo dnf install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm
 
 # Install dependencies
 sudo dnf install -y mame-tools p7zip p7zip-plugins unar unzip
