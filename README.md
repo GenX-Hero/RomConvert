@@ -18,6 +18,8 @@ A Bash script designed to streamline and automate ROM extraction, conversion, an
 
 The script relies on CLI utilities to extract archives, process CUE files, and compress disc images.
 
+### Installation & Dependencies
+
 #### Debian / Ubuntu
 
 ```bash
@@ -29,7 +31,7 @@ sudo apt install -y mame-tools p7zip-full unar unzip build-essential git libuv1-
 cd /tmp
 git clone https://github.com/unknownbrackets/maxcso.git
 cd maxcso
-make && sudo make install
+make LDFLAGS="-luv -lpthread" && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
 ```
 
