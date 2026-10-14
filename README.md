@@ -1,26 +1,27 @@
-# RomConvert
+# 🔄 RomConvert
 
 A Bash script designed to streamline and automate ROM extraction, conversion, and compression for emulation frontends (such as ES-DE and RetroArch). It automatically extracts multi-format archives and converts disc images into highly compressed `.chd` or `.cso` formats.
 
 ---
 
-## Features
+## 🚀 Features
 
-- **Multi-Format Extraction**: Handles `.zip`, `.7z`, and RAR5/legacy `.rar` archives (including non-UTF8 filenames) using `unar`, `7z`, and `unzip`.
-- **CHD Compression**: Converts PS1 and PS2 disc images (`.cue`/`.bin`, `.iso`) to `.chd` using `chdman`.
-- **CSO Compression**: Compresses PSP `.iso` files to `.cso` using multi-threaded `maxcso`.
-- **Multi-Disc Support**: Automatically generates `.m3u` playlist files for multi-disc titles.
-- **Clean Workspace**: Automatically purges temporary extracted files post-conversion to save disk space.
+* 📦 **Multi-Format Extraction**: Handles `.zip`, `.7z`, and RAR5/legacy `.rar` archives (including non-UTF8 filenames) using `unar`, `7z`, and `unzip`.
+* 💿 **CHD Compression**: Converts PS1 and PS2 disc images (`.cue` / `.bin`, `.iso`) to `.chd` using `chdman`.
+* 🗜️ **CSO Compression**: Compresses PSP `.iso` files to `.cso` using multi-threaded `maxcso`.
+* 📀 **Multi-Disc Support**: Automatically generates `.m3u` playlist files for multi-disc titles.
+* 🧹 **Clean Workspace**: Automatically purges temporary extracted files post-conversion to save disk space.
 
 ---
 
-## Prerequisites & Dependencies
+
+## 🛠️ Prerequisites & Dependencies
 
 The script relies on CLI utilities to extract archives, process CUE files, and compress disc images.
 
-### Installation & Dependencies
+### 📥 1. Install System Dependencies
 
-#### Debian / Ubuntu
+#### 🐧 Debian / Ubuntu
 
 ```bash
 # 1. Install system tools & build dependencies
@@ -35,7 +36,7 @@ make LDFLAGS="-luv -lpthread" && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
 ```
 
-#### RHEL / AlmaLinux / Rocky Linux 9
+#### 🎩 RHEL / AlmaLinux / Rocky Linux 9
 
 ```bash
 # 1. Enable EPEL & CRB repositories
@@ -60,9 +61,20 @@ make && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
 ```
 
+### 🏠 2. Install RomConvert (Local Setup)
+
+Clone the repository and create a symbolic link to your local user's binary directory:
+
+```bash
+git clone [https://github.com/GenX-Hero/RomConvert.git](https://github.com/GenX-Hero/RomConvert.git)
+cd RomConvert
+mkdir -p ~/.local/bin
+ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
+```
+
 ---
 
-## Dependency Breakdown
+### ⚙️ Dependency Breakdown
 
 | Binary | Package (Debian/Ubuntu) | Package (RHEL/Fedora) | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -74,7 +86,7 @@ cd /tmp && rm -rf /tmp/maxcso
 
 ---
 
-## Verification
+### 🔍 Verification
 
 To verify that all required dependencies are correctly installed and available in your `$PATH`:
 
@@ -84,14 +96,28 @@ which chdman maxcso 7z unar unzip
 
 ---
 
-## Usage
+## 💻 Usage
 
-1. Grant execution permissions to the script:
-   ```bash
-   chmod +x romconvert.sh
-   ```
+Run the script by specifying the target system and the archive file(s) or pattern to process:
 
-2. Run the script by specifying your target ROM directory:
-   ```bash
-   ./romconvert.sh /path/to/roms
-   ```
+```bash
+romconvert <system> <archive_file_or_pattern>
+```
+
+### 🎮 Supported Systems
+* `psx` – Converts PS1 archives (`.zip`, `.7z`, `.rar`) to `.chd` using `chdman`. Generates `.m3u` for multi-disc titles.
+* `ps2` – Converts PS2 archives (`.zip`, `.7z`, `.rar`) to `.chd` using `chdman`.
+* `psp` – Converts PSP archives (`.zip`, `.7z`, `.rar`) to `.cso` using `maxcso`.
+
+### 💡 Examples
+
+```bash
+# Convert a single PS1 game or pattern
+romconvert psx "Final Fantasy VII*.7z"
+
+# Convert PS2 archives
+romconvert ps2 "Metal Gear Solid 2*.zip"
+
+# Convert a PSP game
+romconvert psp "Wild Arms XF*.7z"
+```
