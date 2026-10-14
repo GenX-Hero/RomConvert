@@ -17,19 +17,20 @@ fi
 
 # 1. Configurazione percorsi
 SISTEMA=$1
-DEST_DIR="/mnt/d/ES-DE/ROMs/$SISTEMA"
+DEST_DIR="/mnt/d/ES-DE/ROMs"
 CUE_DIR="/mnt/d/romvault/Extra Utilities/1- Cue library per i Bin PSX"
 
 shift
 ARGUMENTI=("$@")
 NUM_FILES=${#ARGUMENTI[@]}
 
+WORKDIR="$DEST_DIR/$SISTEMA"
 SECONDS=0
 echo "Sistema di destinazione: $SISTEMA ($DEST_DIR)"
 echo "Rilevati $NUM_FILES file da processare."
 echo "========================================"
 
-mkdir -p "$DEST_DIR"
+mkdir -p "$WORK_DIR"
 
 # --- FUNZIONE REPERIMENTO CUE MANCANTE ---
 ricerca_cue_mancante() {
@@ -124,7 +125,7 @@ processa_monodisco() {
     fi
 
     if [ -n "$file_indice" ]; then
-        comprimi_immagine "$file_indice" "$DEST_DIR/$nome_gioco"
+        comprimi_immagine "$file_indice" "$WORK_DIR/$nome_gioco"
     else
         echo "Errore: Impossibile procedere. Nessun .cue/.ccd/.iso trovato per $nome_gioco."
     fi
@@ -163,9 +164,9 @@ else
 
     echo "Modalità MULTIDISCO (m3u) per: $NOME_BASE"
 
-    DIR_MULTIDISCO="$DEST_DIR/.multidisco"
+    DIR_MULTIDISCO="$WORK_DIR/.multidisco"
     CARTELLA_GIOCO="$DIR_MULTIDISCO/$NOME_BASE"
-    FILE_M3U="$DEST_DIR/$NOME_BASE.m3u"
+    FILE_M3U="$WORK_DIR/$NOME_BASE.m3u"
 
     mkdir -p "$CARTELLA_GIOCO"
     > "$FILE_M3U"
