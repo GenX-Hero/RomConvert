@@ -27,7 +27,7 @@ sudo apt install -y mame-tools p7zip-full unar unzip build-essential git libuv1-
 
 # 2. Build and install maxcso
 cd /tmp
-git clone [https://github.com/unknownbrackets/maxcso.git](https://github.com/unknownbrackets/maxcso.git)
+git clone https://github.com/unknownbrackets/maxcso.git
 cd maxcso
 make && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
@@ -45,14 +45,14 @@ sudo dnf install -y p7zip p7zip-plugins unar unzip cpio gcc-c++ make git libuv-d
 
 # 3. Extract chdman standalone binary
 cd /tmp
-wget -O mame-tools.rpm [https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm](https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm)
+wget -O mame-tools.rpm https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm
 rpm2cpio mame-tools.rpm | cpio -idmv ./usr/bin/chdman
 sudo mv usr/bin/chdman /usr/local/bin/
 rm -f /tmp/mame-tools.rpm
 
 # 4. Build and install maxcso
 cd /tmp
-git clone [https://github.com/unknownbrackets/maxcso.git](https://github.com/unknownbrackets/maxcso.git)
+git clone https://github.com/unknownbrackets/maxcso.git
 cd maxcso
 make && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
