@@ -69,7 +69,7 @@ cd /tmp && rm -rf /tmp/maxcso
 Clone the repository and create a symbolic link to your local user's binary directory:
 
 ```bash
-git clone [https://github.com/GenX-Hero/RomConvert.git](https://github.com/GenX-Hero/RomConvert.git)
+git clone https://github.com/GenX-Hero/RomConvert.git
 cd RomConvert
 mkdir -p ~/.local/bin
 ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
@@ -109,13 +109,13 @@ By default, the script points directly to the default **EmulationStation Desktop
 ```bash
 # Path definitions inside romconvert.sh
 DEST_DIR="/mnt/d/ES-DE/ROMs"
-CUE_LIB_DIR="/mnt/d/RomConvert/CUE_Library/PSX"
+CUE_DIR="/mnt/d/RomConvert/CUE_Library/PSX"
 ```
 
 > ⚠️ **Note**: As distributed, these variables reflect the author's specific ES-DE installation paths. Modify them at your own risk to match your local storage structure or mount points.
 
 ### 📑 CUE File Library (`CUE_LIB_DIR`)
-For PS1 conversion, if an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, `RomConvert` checks `CUE_LIB_DIR` for standard Redump `.cue` files to automatically recover and rebuild the disc structure before converting to `.chd`.
+For PS1 conversion, if an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, `RomConvert` checks `CUE_DIR` for standard Redump `.cue` files to automatically recover and rebuild the disc structure before converting to `.chd`.
 
 ---
 
@@ -139,7 +139,7 @@ When a multi-disc set is processed:
 2. Individual `.chd` files for each disc are placed inside `.multidisc/<Game Name>/`.
 3. A single `.m3u` playlist referencing all discs is generated in the root PS1 directory, ensuring frontends like ES-DE show a clean, single game entry instead of multiple disc entries.
 
-According to my setup, i place the "hidden" .multidisc folder in the ES-DE system (psx) ROMs folder, at the same level with its m3u and other single disk games' chd then i keep hidden folder visibility flagged oof in ES-DE settings.
+According to my setup, i place the "hidden" .multidisc folder in the ES-DE system (psx) ROMs folder, at the same level with its m3u and other single disc games' chd then i keep hidden folder visibility flagged off in ES-DE settings.
 ---
 
 ## 💻 Usage
