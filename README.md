@@ -18,37 +18,44 @@ A Bash script designed to streamline and automate ROM extraction, conversion, an
 
 The script relies on CLI utilities to extract archives, process CUE files, and compress disc images.
 
-### Debian / Ubuntu / WSL
-
-1. Install base dependencies via `apt`:
+#### Debian / Ubuntu
 
 ```bash
-sudo apt update && sudo apt install -y mame-tools p7zip-full p7zip-rar unzip unar
+# 1. Install system tools & build dependencies
+sudo apt update
+sudo apt install -y mame-tools p7zip-full unar unzip build-essential git libuv1-dev liblz4-dev zlib1g-dev libdeflate-dev
+
+# 2. Build and install maxcso
+cd /tmp
+git clone [https://github.com/unknownbrackets/maxcso.git](https://github.com/unknownbrackets/maxcso.git)
+cd maxcso
+make && sudo make install
+cd /tmp && rm -rf /tmp/maxcso
 ```
 
-2. Install `maxcso` (download binary directly if not available in your distribution's APT repositories, e.g., Ubuntu 24.04+):
+#### RHEL / AlmaLinux / Rocky Linux 9
 
 ```bash
-wget https://github.com/UnknownBrackets/maxcso/releases/download/v1.13.0/maxcso
-chmod +x maxcso
-sudo mv maxcso /usr/local/bin/
-```
-
-
-#### Fedora / RHEL / Rocky Linux / AlmaLinux
-
-> **Note for RHEL / AlmaLinux / Rocky Linux 9:** Enable EPEL, CRB, and RPM Fusion repositories first.
-
-```bash
-# Enable EPEL & CRB (RHEL / Alma / Rocky 9)
+# 1. Enable EPEL & CRB repositories
 sudo dnf install -y epel-release
 sudo crb enable
 
-# Enable RPM Fusion (required for mame-tools on EL9)
-sudo dnf install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm
+# 2. Install runtime dependencies & build tools
+sudo dnf install -y p7zip p7zip-plugins unar unzip cpio gcc-c++ make git libuv-devel lz4-devel zlib-devel libdeflate-devel
 
-# Install dependencies
-sudo dnf install -y mame-tools p7zip p7zip-plugins unar unzip
+# 3. Extract chdman standalone binary
+cd /tmp
+wget -O mame-tools.rpm [https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm](https://kojipkgs.fedoraproject.org/packages/mame/0.269/1.fc41/x86_64/mame-tools-0.269-1.fc41.x86_64.rpm)
+rpm2cpio mame-tools.rpm | cpio -idmv ./usr/bin/chdman
+sudo mv usr/bin/chdman /usr/local/bin/
+rm -f /tmp/mame-tools.rpm
+
+# 4. Build and install maxcso
+cd /tmp
+git clone [https://github.com/unknownbrackets/maxcso.git](https://github.com/unknownbrackets/maxcso.git)
+cd maxcso
+make && sudo make install
+cd /tmp && rm -rf /tmp/maxcso
 ```
 
 ---
