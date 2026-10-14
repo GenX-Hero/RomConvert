@@ -24,7 +24,7 @@ shift
 ARGUMENTI=("$@")
 NUM_FILES=${#ARGUMENTI[@]}
 
-WORKDIR="$DEST_DIR/$SISTEMA"
+WORK_DIR="$DEST_DIR/$SISTEMA"
 SECONDS=0
 echo "Sistema di destinazione: $SISTEMA ($DEST_DIR)"
 echo "Rilevati $NUM_FILES file da processare."
