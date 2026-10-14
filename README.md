@@ -7,7 +7,7 @@ A Bash script designed to streamline and automate ROM extraction, conversion, an
 ## Features
 
 - **Multi-Format Extraction**: Handles `.zip`, `.7z`, and RAR5/legacy `.rar` archives (including non-UTF8 filenames) using `unar`, `7z`, and `unzip`.
-- **CHD Compression**: Converts PS1, PS2, and PSP disc images (`.cue`/`.bin`, `.iso`) to `.chd` using `chdman`.
+- **CHD Compression**: Converts PS1 and PS2 disc images (`.cue`/`.bin`, `.iso`) to `.chd` using `chdman`.
 - **CSO Compression**: Compresses PSP `.iso` files to `.cso` using multi-threaded `maxcso`.
 - **Multi-Disc Support**: Automatically generates `.m3u` playlist files for multi-disc titles.
 - **Clean Workspace**: Automatically purges temporary extracted files post-conversion to save disk space.
