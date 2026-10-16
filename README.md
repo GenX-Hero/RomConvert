@@ -107,7 +107,7 @@ ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
 To verify that all required dependencies are correctly installed and available in your `$PATH`:
 
 ```bash
-which chdman maxcso 7z unar unzip
+which chdman maxcso 7z unar unzip romconvert
 ```
 
 ---
