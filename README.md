@@ -125,10 +125,15 @@ DEST_DIR="/mnt/d/ES-DE/ROMs"
 CUE_DIR="/mnt/d/RomConvert/CUE_Library/PSX"
 ```
 
-> ⚠️ **Note**: As distributed, these variables reflect the author's specific ES-DE installation paths. Modify them at your own risk to match your local storage structure or mount points.
+> ⚠️ **Note**: As distributed, these variables reflect the author's personal setup (WSL mount points under `/mnt/d/` with default ES-DE and RomConvert directory paths). You **must** modify these paths in `romconvert.sh` to match your local drive layout, mount points, or ROM folder structure before running the script.
 
 ### 📑 CUE File Library (`CUE_DIR`)
 For PS1 conversion, if an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, `RomConvert` checks `CUE_DIR` for standard Redump `.cue` files to automatically recover and rebuild the disc structure before converting to `.chd`.
+
+#### 💡 Sourcing Redump CUE Sheets
+To build your local CUE library:
+1. Download the official **CUE Pack** for your target system (e.g., *Sony - PlayStation - CUE Sheets*) directly from [Redump Downloads](http://redump.org/downloads/).
+2. Extract the `.cue` files into your configured `CUE_DIR` directory.
 
 ---
 
@@ -163,6 +168,7 @@ Run the script by specifying the target system and the archive file(s) or patter
 ```bash
 romconvert <system> <archive_file_or_pattern>
 ```
+> ⚠️ **Note**: Input files must be compressed archives (`.7z`, `.zip`, `.rar`). Do not pass uncompressed `.iso`, `.bin`, or `.cue` files directly.
 
 ### 🎮 Supported Systems
 * `psx` – Converts PS1 archives (`.zip`, `.7z`, `.rar`) to `.chd` using `chdman`. Generates `.m3u` for multi-disc titles.
