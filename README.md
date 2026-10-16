@@ -17,26 +17,64 @@ A Bash script designed to streamline and automate ROM extraction, conversion, an
 
 ---
 
-
 ## 🛠️ Prerequisites & Dependencies
 
 The script relies on CLI utilities to extract archives, process CUE files, and compress disc images.
 
 ### 📥 1. Install System Dependencies
 
-#### 🐧 Debian / Ubuntu
+#### <img valign="middle" width="16" height="16" alt="Windows Users" src="https://github.com/user-attachments/assets/bf925b76-ff9d-4054-8639-27084c7289dd" /> Windows Users
+
+```powershell
+# Windows users must install and run a WSL2 Linux distribution. (Tested and fully working on Fedora,
+# Debian, and Ubuntu; major dependency issues were encountered on AlmaLinux, Rocky Linux, and other
+# RHEL-based enterprise distributions).
+
+# View all available Linux distributions
+wsl --list --online
+
+# Install a distribution (e.g., Debian)
+wsl --install -d Debian
+```
+
+#### <img  valign="middle" width="16" height="16" alt="Debian Users" src="https://github.com/user-attachments/assets/1cfa396c-de6a-4ee9-b8db-7e482936abfa" /> Debian / <img  valign="middle" width="16" height="16" alt="Ubuntu Users" src="https://github.com/user-attachments/assets/e41b571e-5926-4a25-a3e1-52e6ff6d7714" /> Ubuntu Users
 
 ```bash
 # 1. Install system tools & build dependencies
 sudo apt update
-sudo apt install -y mame-tools p7zip-full unar unzip build-essential git libuv1-dev liblz4-dev zlib1g-dev libdeflate-dev
+sudo apt install -y p7zip-full unar unzip build-essential git libuv1-dev liblz4-dev zlib1g-dev libdeflate-dev libutf8proc3
 
-# 2. Build and install maxcso
+# 2. Download, extract, and add chdman to PATH (saving gigabytes of unnecessary MAME dependencies)
 cd /tmp
-git clone https://github.com/unknownbrackets/maxcso.git
+apt-get download mame-tools
+dpkg-deb -x mame-tools_*.deb ./mame-extracted
+mkdir -p ~/.local/bin
+mv ./mame-extracted/usr/bin/chdman ~/.local/bin/
+rm -rf /tmp/mame-tools_*.deb /tmp/mame-extracted
+
+# 3. Build and install maxcso
+cd /tmp
+git clone [https://github.com/unknownbrackets/maxcso.git](https://github.com/unknownbrackets/maxcso.git)
 cd maxcso
 make LDFLAGS="-luv -lpthread" && sudo make install
 cd /tmp && rm -rf /tmp/maxcso
+```
+
+#### <img  valign="middle" width="20" height="20" alt="Fedora Users" src="https://github.com/user-attachments/assets/51f82c2e-a8ef-4e6d-8df4-236ba474fe61" /> Fedora Users
+
+```bash
+# 1. Install system tools & build dependencies
+sudo dnf install 7zip unar unzip cpio SDL3 flac-libs utf8proc
+
+# 2. Download, extract, and add chdman to PATH (saving gigabytes of unnecessary MAME dependencies)
+sudo dnf download mame-tools
+mkdir -p ~/.local/bin
+mv ./usr/bin/chdman ~/.local/bin/
+rm -rf ./usr ./etc ./usr/share mame-tools-*.rpm
+
+# 3. Install maxcso
+dnf copr enable phantomx/chinforpms
+sudo dnf install maxcso
 ```
 
 ### 🏠 2. Install RomConvert (Local Setup)
@@ -54,11 +92,11 @@ ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
 
 ### ⚙️ Dependency Breakdown
 
-| Binary | Package (Debian/Ubuntu) | Package (RHEL/Fedora) | Purpose |
+| Binary | Package (Debian/Ubuntu) | Package (Fedora) | Purpose |
 | :--- | :--- | :--- | :--- |
-| `chdman` | `mame-tools` | `mame-tools` | Converts CD/DVD disc images (`.cue`, `.iso`) to `.chd` |
-| `maxcso` | Direct Binary / `maxcso` | `maxcso` | Multi-threaded compression for PSP `.iso` to `.cso` |
-| `7z` | `p7zip-full` / `p7zip-rar` | `p7zip` / `p7zip-plugins` | Extracts `.7z`, `.zip`, and standard archives |
+| `chdman` | `mame-tools` *(extracted)* | `mame-tools` *(extracted)* | Converts CD/DVD disc images (`.cue`, `.iso`) to `.chd` |
+| `maxcso` | Custom Build | `maxcso` *(via COPR)* | Multi-threaded compression for PSP `.iso` to `.cso` |
+| `7z` | `p7zip-full` | `7zip` | Extracts `.7z`, `.zip`, and standard archives |
 | `unar` | `unar` | `unar` | Robust extraction for RAR5 and non-UTF8 encoded archives |
 | `unzip` | `unzip` | `unzip` | Fast extraction for standard `.zip` files |
 
