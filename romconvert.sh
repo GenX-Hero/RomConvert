@@ -41,6 +41,12 @@ ricerca_cue_mancante() {
         local bin_fullname=$(basename "$file_bin")
         local bin_basename="${bin_fullname%.*}"
 
+        # Se la libreria CUE non esiste proprio sul sistema, avvisa ed esci subito dalla funzione
+        if [ ! -d "$CUE_DIR" ]; then
+            echo "   Nessun indice trovato. Libreria CUE non raggiungibile ($CUE_DIR)."
+            return 1
+        fi
+
         echo -n "   Nessun indice trovato. Ricerca di \"$bin_basename.cue\" nella libreria CUE... "
 
         if [ -f "$CUE_DIR/$bin_basename.cue" ]; then
