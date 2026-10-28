@@ -1,14 +1,17 @@
 <img width="1024" height="572" alt="image" src="https://github.com/user-attachments/assets/9b6cdc1a-0a6b-4daf-b4af-06d6172e8f52" />
 
 
-# 🔄 RomConvert
+# 🔄 RomConvert 2.0
 
-A Bash script designed to streamline and automate ROM extraction, conversion, and compression for emulation frontends (such as ES-DE and RetroArch). It automatically extracts multi-format archives and converts disc images into highly compressed `.chd` or `.cso` formats.
+A Python application designed to streamline and automate ROM extraction, conversion, and compression for emulation frontends (such as ES-DE and RetroArch). It automatically extracts multi-format archives and converts disc images into highly compressed `.chd` or `.cso` formats.
 
 ---
 
 ## 🚀 Features
 
+* 🖥️ **Interactive TUI**: Built with Textual for a modern terminal dashboard with real-time status and log monitoring.
+* 🔍 **Pre-Flight Inspection**: Automatically checks staging files for structural anomalies, missing `.cue` files, and mandatory `.sbi` requirements before conversion.
+* 🗄️ **REDUMP Database Integration**: Uses a local SQLite database populated from REDUMP DATs to identify LibCrypt-protected PSX titles and enforce `.sbi` presence.
 * 📦 **Multi-Format Extraction**: Handles `.zip`, `.7z`, and RAR5/legacy `.rar` archives (including non-UTF8 filenames) using `unar`, `7z`, and `unzip`.
 * 💿 **CHD Compression**: Converts PS1 and PS2 disc images (`.cue` / `.bin`, `.iso`) to `.chd` using `chdman`.
 * 🗜️ **CSO Compression**: Compresses PSP `.iso` files to `.cso` using multi-threaded `maxcso`.
@@ -42,7 +45,7 @@ wsl --install -d Debian
 ```bash
 # 1. Install system tools & build dependencies
 sudo apt update
-sudo apt install -y p7zip-full unar unzip build-essential git libuv1-dev liblz4-dev zlib1g-dev libdeflate-dev libutf8proc3
+sudo apt install -y build-essential git make zip unzip unar p7zip-full libsdl2-dev zlib1g-dev libbz2-dev libuv1-dev liblz4-dev libdeflate-dev libutf8proc-dev
 
 # 2. Download, extract, and add chdman to PATH (saving gigabytes of unnecessary MAME dependencies)
 cd /tmp
@@ -64,7 +67,7 @@ cd /tmp && rm -rf /tmp/maxcso
 
 ```bash
 # 1. Install system tools & build dependencies
-sudo dnf install 7zip unar unzip cpio SDL3 flac-libs utf8proc
+sudo dnf install -y gcc gcc-c++ libstdc++-static make git zip unzip 7zip unar cpio SDL2-devel zlib-devel bzip2-devel libuv-devel lz4-devel libdeflate-devel utf8proc-devel
 
 # 2. Download, extract, and add chdman to PATH (saving gigabytes of unnecessary MAME dependencies)
 sudo dnf download mame-tools
@@ -77,20 +80,19 @@ dnf copr enable phantomx/chinforpms
 sudo dnf install maxcso
 ```
 
-### 🏠 2. Install RomConvert (Local Setup)
+---
 
-Clone the repository and create a symbolic link to your local user's binary directory:
+### 🔍 2. Verification
+
+To verify that all required dependencies are correctly installed and available in your `$PATH`:
 
 ```bash
-git clone https://github.com/GenX-Hero/RomConvert.git
-cd RomConvert
-mkdir -p ~/.local/bin
-ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
+which chdman maxcso 7z unar unzip
 ```
 
 ---
 
-### ⚙️ Dependency Breakdown
+#### ⚙️ Dependency Breakdown
 
 | Binary | Package (Debian/Ubuntu) | Package (Fedora) | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -102,97 +104,101 @@ ln -s $(pwd)/romconvert.sh ~/.local/bin/romconvert
 
 ---
 
-### 🔍 Verification
+### 🏠 3. Install RomConvert (Local Setup)
 
-To verify that all required dependencies are correctly installed and available in your `$PATH`:
+Clone the repository, set up the Python virtual environment, and run the application:
 
 ```bash
-which chdman maxcso 7z unar unzip romconvert
+# 1. Clone the repository
+git clone https://github.com/GenX-Hero/RomConvert.git
+cd RomConvert
+
+# 2. Create python virtual env and install required packages
+python3 -m venv venv
+source venv/bin/activate
+pip install textual py7zr rarfile
+
+# 3. Make executable and launch the tool
+chmod +x RomConvert.py
+./RomConvert.py
+
 ```
+
+For running the app again in the future, remember to activate the venv with `source venv/bin/activate`.
 
 ---
 
 ## ⚙️ Customization & Configuration
 
-Before running the script, open `romconvert.sh` in a text editor to verify or adapt the path configuration to your personal setup.
+The application generates a `RomConvert.CFG` configuration file automatically on its first run. 
 
-### 📂 Target Directory Variables
-By default, the script points directly to the default **EmulationStation Desktop Edition (ES-DE)** ROM directories. Edit these paths in `romconvert.sh` if your setup differs:
+### 📂 Workspace Directories
+By default, the application uses self-contained relative directories within its own root folder. You can open `RomConvert.CFG` in any text editor and change these to your absolute paths (e.g., an external drive or a network share).
 
-```bash
-# Path definitions inside romconvert.sh
-DEST_DIR="/mnt/d/ES-DE/ROMs"
-CUE_DIR="/mnt/d/RomConvert/CUE_Library/PSX"
+```ini
+[Settings]
+SOURCE_DIR = "./SOURCE/"
+TARGET_DIR = "./TARGET/"
+TEMPOR_DIR = "./TEMPORARY/"
+REDUMP_DIR = "./REDUMP/"
+STORED_DIR = "./ARCHIVE/"
+REJECT_DIR = "./REJECTED/"
+HIDDEN_DIR = ".multidisc"
+Quick_TIME = false
 ```
 
-> ⚠️ **Note**: As distributed, these variables reflect the author's personal setup (WSL mount points under `/mnt/d/` with default ES-DE and RomConvert directory paths). You **must** modify these paths in `romconvert.sh` to match your local drive layout, mount points, or ROM folder structure before running the script.
+> 💡 **Tip**: If you change `TARGET_DIR` to point directly to your emulator's ROM folder (e.g., `/mnt/d/ES-DE/ROMs/`), RomConvert will place the converted `.chd` and `.cso` files directly into your frontend's library!
 
-### 📑 CUE File Library (`CUE_DIR`)
-For PS1 conversion, if an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, `RomConvert` checks `CUE_DIR` for standard Redump `.cue` files to automatically recover and rebuild the disc structure before converting to `.chd`.
+---
 
-#### 💡 Sourcing Redump CUE Sheets
-To build your local CUE library:
-1. Download the official **CUE Pack** for your target system (e.g., *Sony - PlayStation - CUE Sheets*) directly from [Redump Downloads](http://redump.org/downloads/).
-2. Extract the `.cue` files into your configured `CUE_DIR` directory.
+### 📑 Redump Integration (Auto CUE & SBI Recovery)
+In version 1.0, users had to manually download and manage CUE sheets. **Version 2.0 handles this entirely automatically.**
+
+When you run RomConvert for the first time, the **Interactive Pre-Flight Checklist** will safely connect to [Redump.org](http://redump.org) to:
+1. Download the latest DAT, CUE, and SBI archives.
+2. Build a local SQLite database (`RomConvert.DB`) and automatically populate the `REDUMP/` directory structure.
+
+#### 🛠️ How it works during conversion:
+- **Missing CUEs**: If an archive contains orphaned or corrupted `.bin` files missing their corresponding `.cue` sheet, RomConvert queries the DB, checks the track CRC32, and seamlessly injects the correct CUE file from the `REDUMP/` cache to allow `chdman` to compress the disc image.
+- **LibCrypt Protection (.sbi)**: If you convert a European (PAL) PS1 game that uses LibCrypt copy protection, RomConvert automatically detects it via the database and places the required `.sbi` file exactly where it belongs alongside your newly created `.chd`.
 
 ---
 
 ## 📀 Multi-Disc Handling & Folder Structure
 
-For multi-disc PS1 games, `RomConvert` relies on standard **Redump naming conventions** to group discs correctly.
+For multi-disc titles, `RomConvert` leverages the official **Redump naming conventions** retrieved from the local database to group discs correctly.
 
-### 🏷️ Disc Tag Requirement
-Source archive filenames **must include disc tag indicators** such as `(Disc 1)`, `(Disc 2)`, `(Disc 3)` (or `(Disc A)`, `(Disc B)`, etc.).
+### 🏷️ Redump Disc Recognition
+The application identifies multi-disc sets automatically by parsing the canonical game names provided by the Redump DAT files, which natively include tags like `(Disc 1 of 2)`, `(Disc 2 of 2)`, or `(Disc 1)`.
 
-* **Correct Multi-Disc Naming**:
-  * `Final Fantasy VII (USA) (Disc 1).7z`
-  * `Final Fantasy VII (USA) (Disc 2).7z`
-  * `Final Fantasy VII (USA) (Disc 3).7z`
+- **Recognized Multi-Disc Structure**:
+  * `Final Fantasy VII (USA) (Disc 1 of 3).7z`
+  * `Final Fantasy VII (USA) (Disc 2 of 3).7z`
+  * `Final Fantasy VII (USA) (Disc 3 of 3).7z`
 
-> ⚠️ **Important**: If disc tags like `(Disc 1)` are missing from the source filenames, the script will treat each archive as an independent single-disc title and process them separately.
+> ⚠️ **Important**: If the source files do not match a multi-disc entry in the Redump database or lack proper identification, the script will process them as independent single-disc titles.
 
 ### 📁 `.multidisc` Directory Logic
 When a multi-disc set is processed:
-1. A hidden directory named `.multidisc/<Game Name>` is created inside the target folder.
-2. Individual `.chd` files for each disc are placed inside `.multidisc/<Game Name>/`.
-3. A single `.m3u` playlist referencing all discs is generated in the root PS1 directory, ensuring frontends like ES-DE show a clean, single game entry instead of multiple disc entries.
+1. A hidden directory named `.multidisc/<Game Name>` is created inside the target system folder.
+2. Individual `.chd` (or `.cso`) files for each disc are placed inside `.multidisc/<Game Name>/`.
+3. A single `.m3u` playlist referencing all discs is generated in the root system directory, ensuring frontends like ES-DE show a clean, single game entry instead of multiple disc clutter.
 
-💡 Tip: In ES-DE, place the .multidisc folder inside the psx ROMs directory at the same level as the .m3u playlist and single-disc .chd files. Ensure "Show Hidden Files/Folders" is toggled OFF in ES-DE settings for a clean game list.
+> 💡 **Tip**: In ES-DE, place the `.multidisc` folder inside your ROMs directory at the same level as the `.m3u` playlist and single-disc files. Ensure "Show Hidden Files/Folders" is toggled **OFF** in your frontend settings for a pristine game library view.
 
 ---
 
 ## 💻 Usage
 
-Run the script by specifying the target system and the archive file(s) or pattern to process:
+Launch the interactive Textual dashboard from within the project directory:
 
 ```bash
-romconvert <system> <archive_file_or_pattern>
+python3 RomConvert.py
 ```
-> ⚠️ **Note**: Input files must be compressed archives (`.7z`, `.zip`, `.rar`). Do not pass uncompressed `.iso`, `.bin`, or `.cue` files directly.
 
-### 🎮 Supported Systems
-* `psx` – Converts PS1 archives (`.zip`, `.7z`, `.rar`) to `.chd` using `chdman`. Generates `.m3u` for multi-disc titles.
-* `ps2` – Converts PS2 archives (`.zip`, `.7z`, `.rar`) to `.chd` using `chdman`.
-* `psp` – Converts PSP archives (`.zip`, `.7z`, `.rar`) to `.cso` using `maxcso`.
-
-### 💡 Examples
-
-```bash
-# Convert single-disc PS1 games
-romconvert psx "Tomb Raider*.7z"
-
-# Convert a multi-disc PS1 game (archive names must include (Disc 1), (Disc 2), etc.)
-romconvert psx "Final Fantasy VII*.7z"
-
-# Convert PS2 archives
-romconvert ps2 "Metal Gear Solid 2*.zip"
-
-# Convert a PSP game
-romconvert psp "Wild Arms XF*.7z"
-
-# Convert a batch of single disc games (keep this within the same system)
-# Assuming you have in the folder: both "God of Wars (NTSC).7z" and "God of Wars II (PAL).zip"
-romconvert ps2 "God of Wars*"
-
-
-```
+### 🖥️ Workflow Overview
+1. **Startup & Pre-Flight Checks**: The application automatically verifies your database, parses Redump DAT records, and checks your CUE/SBI cache files. 
+   > 💡 **Tip**: If you already know your environment is fully set up and operational, you can set `Quick_TIME = true` inside `RomConvert.CFG` to skip the 1-second delay between pre-flight checklist steps and speed up startup.
+2. **Scan Staging Directory**: Click **`🔍 Scan Staging Dir`** to analyze all raw or compressed ROMs placed inside your configured `SOURCE/` folder.
+3. **Review Queue & Diagnostics**: Inspect the interactive table for missing files, multi-disc completion status, and validation flags (`+++`, `WRN`, `---`).
+4. **Execute Conversion**: Once all items pass inspection, click **`🚀 Start Conversion`** to safely extract, compress (`.chd` / `.cso`), organize multi-disc `.m3u` playlists, copy required `.sbi` files, and archive original files.
