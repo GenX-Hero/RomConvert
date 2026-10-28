@@ -339,7 +339,7 @@ TEMPOR_DIR = "./TEMPORARY/"
 REDUMP_DIR = "./REDUMP/"
 STORED_DIR = "./ARCHIVE/"
 REJECT_DIR = "./REJECTED/"
-HIDDEN_DIR = ".multidisco"
+HIDDEN_DIR = ".multidisc"
 Quick_TIME = False
 
 def RC_Oper_Config_Load(cfg_path: str = CONFIG_FILE) -> Tuple[bool, str]:
@@ -356,7 +356,7 @@ def RC_Oper_Config_Load(cfg_path: str = CONFIG_FILE) -> Tuple[bool, str]:
                 "REDUMP_DIR": "./REDUMP/",
                 "STORED_DIR": "./ARCHIVE/",
                 "REJECT_DIR": "./REJECTED/",
-                "HIDDEN_DIR": ".multidisco",
+                "HIDDEN_DIR": ".multidisc",
                 "Quick_TIME": "false"
             }
             with open(cfg_path, "w") as configfile:
